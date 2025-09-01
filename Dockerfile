@@ -17,7 +17,7 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get clean -y
 # DEBUG: Inspect certificates: openssl x509 -text -noout -in /openvpn-ca/pki/ca.crt
-# RUN for i in $(seq 1 16); do ./easyrsa gen-req "client$i" nopass && ./easyrsa sign-req client "client$i"; done
+RUN for i in $(seq 1 16); do ./easyrsa gen-req "client$i" nopass && ./easyrsa sign-req client "client$i"; done
 COPY server.conf /etc/openvpn/server.conf
 EXPOSE 443/tcp
 CMD iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE && mkdir -p /dev/net && mknod /dev/net/tun c 10 200 && openvpn --config /etc/openvpn/server.conf
